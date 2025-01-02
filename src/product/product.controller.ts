@@ -1,19 +1,25 @@
 import { Controller, Get, Post, Body, Param, Query } from '@nestjs/common';
 import { ProductService } from './product.service';
-import { CreateProductDto } from './dto/create-product.dto';
-import { GetAllProductsDTO } from './dto/get-all-products.dto';
+import { ProductFilterDTO } from './dto/product-filter.dto';
+import { ApiProperty } from '@nestjs/swagger';
 
-@Controller('product')
+@Controller('api/product')
 export class ProductController {
   constructor(private readonly productsService: ProductService) {}
 
-  @Get()
-  async getAllProducts(@Query() filters: GetAllProductsDTO) {
+  @Post()
+  async getAllProducts(@Body() filters: ProductFilterDTO) {
     return this.productsService.getAllProducts(filters);
   }
 
   @Get(':id')
   async getProductById(@Param('id') id: string) {
     return this.productsService.getProductById(Number(id));
+  }
+
+  @Post('top-products')
+  @ApiProperty()
+  async getTopProducts(@Query('area') area: string) {
+    return this.productsService.getTopProducts(area);
   }
 }
